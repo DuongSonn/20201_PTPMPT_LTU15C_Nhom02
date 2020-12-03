@@ -1,0 +1,40 @@
+version: "3"
+services:
+  react-app:
+    image: duongson98/react-app
+    build: ./client
+    # command: npm start
+    ports: 
+      - "3000:3000"
+    volumes: 
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - mern-app
+  api-server:
+    image: duongson98/server-api
+    build: ./api
+    # command: npm start
+    ports:
+      - "8080:8080"
+    volumes: 
+      - ./api:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - mern-app
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    ports:
+      - "27018:27017"
+    networks:
+      - mern-app
+    volumes:
+      - mongo-data:/data/db
+networks:
+  mern-app:
+    driver: bridge
+volumes:
+  mongo-data:
+    driver: local
