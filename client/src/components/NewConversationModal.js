@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
 import { useContacts } from '../contexts/ContactsProvider';
 import { useConversations } from '../contexts/ConversationsProvider';
+import axios from 'axios';
 
-export default function NewConversationModal({ closeModal }) {
+export default function NewConversationModal({ closeModal, id }) {
     const { contacts } = useContacts();
     const [selectedContactIds, setSelectedContactIds] = useState([]);
     const { createConversation } = useConversations();
@@ -11,8 +12,15 @@ export default function NewConversationModal({ closeModal }) {
     function handleSubmit(e) {
         e.preventDefault();
 
-        createConversation(selectedContactIds);
-        closeModal();
+        axios.post('http://localhost:8080/api/conversations', {
+            recipients: selectedContactIds,
+            id: id,
+        }).then(function (response) {
+            createConversation(selectedContactIds);
+            closeModal();
+        }).catch(function (error) {
+            console.log(error);
+        });
     }
     
     function handleCheckboxChange(contactId) {
