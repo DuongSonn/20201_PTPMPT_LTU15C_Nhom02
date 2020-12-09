@@ -1,26 +1,45 @@
 import React, { useRef } from 'react'
 import { Button, Container, Form } from 'react-bootstrap';
-import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios';
 
 export default function Login({ onIdSubmit }) {
-    const idRef = useRef()
+    const passwordRef = useRef();
+    const nameRef = useRef();
 
     function handleSubmit(e) {
         e.preventDefault();
 
-        onIdSubmit(idRef.current.value)
+        axios.post('http://localhost:8080/api/login', {
+            name: nameRef.current.value,
+            password: passwordRef.current.value
+        }).then(function (response) {
+            onIdSubmit(response.data.user._id)
+        }).catch(function (error) {
+            console.log(error);
+        });
     }
 
     function createNewId() {
-        onIdSubmit(uuidv4());
+        axios.post('http://localhost:8080/api/register', {
+            name: nameRef.current.value,
+            password: passwordRef.current.value
+        }).then(async function (response) {
+            onIdSubmit(response.data.user._id)
+        }).catch(function (error) {
+            console.log(error);
+        });
     }
 
     return (
         <Container className="align-items-center d-flex" style={{ height: '100vh'}}>
             <Form onSubmit={handleSubmit} className="w-100">
                 <Form.Group>
-                    <Form.Label>Enter Your Id</Form.Label>
-                    <Form.Control type="text" ref={idRef}></Form.Control>
+                    <Form.Label>Enter Your Name</Form.Label>
+                    <Form.Control type="text" ref={nameRef}></Form.Control>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Enter Your Password</Form.Label>
+                    <Form.Control type="password" ref={passwordRef}></Form.Control>
                 </Form.Group>
                 <Button type="submit" className="mr-2">Login</Button>
                 <Button onClick={createNewId} variant="secondary">Create A New Id</Button>

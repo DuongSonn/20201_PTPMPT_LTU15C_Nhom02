@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useLocalStorgae from '../hooks/useLocalStorage';
 import { useContacts } from './ContactsProvider';
 import { useSocket } from './SocketProvier';
+import axios from 'axios';
 
 const ConversationContext = React.createContext();
 
@@ -52,6 +53,33 @@ export function ConversationsProvider({ id, children }) {
         socket.emit('send-message', {recipients, text})
         addMessageToConversation({recipients, text, sender: id})
     }
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/conversations', {
+            headers: {
+                id: id,
+            }
+        }).then(function (response) {
+            const conversations = response.data.conversations;
+            console.log(response);
+            conversations.forEach(conversation => {
+                const index = conversation.recipients.indexOf(id);
+                if (index > -1) {
+                    conversation.recipients.splice(index, 1);
+                }
+                createConversation(conversation.recipients);
+                if (conversation.messages) {
+                    conversation.messages.forEach(message => {
+                        addMessageToConversation({ 
+                            recipients: conversation.recipients, 
+                            text: message.text, 
+                            sender: message.sender 
+                        })
+                    });
+                }
+            });
+        })
+    }, [id])
 
     const formattedConversations = conversations.map((conversation, index) => {
         const recipients = conversation.recipients.map(recipient => {
