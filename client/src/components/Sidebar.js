@@ -30,7 +30,7 @@ export default function Sidebar({ id }) {
                 </Nav>
                 <Tab.Content className="border-right overflow-auto flex-grow-1">
                     <Tab.Pane eventKey={CONVERSATION_KEY}>
-                        <Conversations></Conversations>
+                        <Conversations id={id}></Conversations>
                     </Tab.Pane>
                     <Tab.Pane eventKey={CONTACT_KEY}>
                         <Contacts></Contacts>
@@ -47,7 +47,7 @@ export default function Sidebar({ id }) {
             <Modal show={modalOpen} onHide={closeModal}>
                 {
                     conversationOpen ? 
-                        <NewConversationModal closeModal={closeModal}></NewConversationModal> 
+                        <NewConversationModal closeModal={closeModal} id={id}></NewConversationModal> 
                         : <NewContactModal closeModal={closeModal}></NewContactModal>
                 }
             </Modal>

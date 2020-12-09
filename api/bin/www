@@ -7,6 +7,10 @@
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
+var Message = require('../models/message');
+var Conversation = require('../models/conversation');
+var mongoose = require('mongoose');
+const User = require('../models/user');
 
 /**
  * Get port from environment and store in Express.
@@ -36,7 +40,24 @@ io.on('connection', (socket) => {
   console.log(id);
   socket.join(id)
 
-  socket.on('send-message', ({ recipients, text }) => {
+  socket.on('send-message', async ({ recipients, text }) => {
+    const message = new Message({
+      sender: id,
+      text
+    })
+    await message.save();
+
+    let recipientsDB = [];
+    recipients.forEach(recipient => {
+      recipientsDB.push(mongoose.Types.ObjectId(recipient))
+    })
+    recipientsDB.push(mongoose.Types.ObjectId(id))
+
+    const conversation = await Conversation.updateOne(
+      { recipients: { $all: recipientsDB } },
+      { $push: { messages: message._id } },
+    )
+
     recipients.forEach(recipient => {
       const newRecipients = recipients.filter(r => r !== recipient)
       newRecipients.push(id);
