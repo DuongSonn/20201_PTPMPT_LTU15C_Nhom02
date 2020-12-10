@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -13,7 +15,7 @@ var apiRouter = require('./routes/api');
 var app = express();
 
 // connect to db
-var mongoDB = 'mongodb://mongo/PTPMPT';
+var mongoDB = process.env.DB_URL;
 mongoose.connect(mongoDB);
 
 // view engine setup

@@ -55,7 +55,7 @@ export function ConversationsProvider({ id, children }) {
     }
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/conversations', {
+        axios.get(`${process.env.REACT_APP_API_URL}/conversations`, {
             headers: {
                 id: id,
             }

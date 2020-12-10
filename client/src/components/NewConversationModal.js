@@ -12,7 +12,7 @@ export default function NewConversationModal({ closeModal, id }) {
     function handleSubmit(e) {
         e.preventDefault();
 
-        axios.post('http://localhost:8080/api/conversations', {
+        axios.post(`${process.env.REACT_APP_API_URL}/conversations`, {
             recipients: selectedContactIds,
             id: id,
         }).then(function (response) {

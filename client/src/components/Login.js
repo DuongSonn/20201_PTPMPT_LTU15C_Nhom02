@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { Button, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
+require('dotenv').config()
 
 export default function Login({ onIdSubmit }) {
     const passwordRef = useRef();
@@ -9,7 +10,7 @@ export default function Login({ onIdSubmit }) {
     function handleSubmit(e) {
         e.preventDefault();
 
-        axios.post('http://localhost:8080/api/login', {
+        axios.post(`${process.env.REACT_APP_API_URL}/login`, {
             name: nameRef.current.value,
             password: passwordRef.current.value
         }).then(function (response) {
@@ -20,7 +21,7 @@ export default function Login({ onIdSubmit }) {
     }
 
     function createNewId() {
-        axios.post('http://localhost:8080/api/register', {
+        axios.post(`${process.env.REACT_APP_API_URL}/register`, {
             name: nameRef.current.value,
             password: passwordRef.current.value
         }).then(async function (response) {
