@@ -11,7 +11,7 @@ export function SocketProvier({ id, children }) {
     const [socket, setSocket] = useState()
 
     useEffect(() => {
-        const newSocket = io('http://localhost:8080', {query: {id}});
+        const newSocket = io(`${process.env.REACT_APP_SOCKET_URL}`, {query: {id}});
         setSocket(newSocket);
 
         return () => newSocket.close()

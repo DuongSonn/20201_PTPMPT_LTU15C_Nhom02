@@ -20,7 +20,7 @@ export function ContactsProvider({ children, id }) {
     }
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/users').then(function (response) {
+        axios.get(`${process.env.REACT_APP_API_URL}/users`).then(function (response) {
         const users = response.data.users;
         users.forEach(user => {
             if (user._id !== id) {
